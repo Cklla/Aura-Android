@@ -7,7 +7,7 @@ import retrofit2.http.POST
 interface AuraApiService {
 
     // @POST : c'est une requête HTTP POST (on envoie des données)
-    // "user/login" : le chemin de la route (s'ajoute à l'URL de base)
+    // "login" : le chemin de la route (s'ajoute à l'URL de base)
     // suspend : obligatoire pour les coroutines (la fonction peut être "mise en pause")
     // @Body : le corps de la requête (l'objet LoginRequest sera converti en JSON)
     @POST("login")
