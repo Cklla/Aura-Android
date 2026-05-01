@@ -1,16 +1,17 @@
 plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
+  id("kotlin-kapt")
 }
 
 android {
   namespace = "com.aura"
-  compileSdk = 33
+  compileSdk = 34
 
   defaultConfig {
     applicationId = "com.aura"
     minSdk = 24
-    targetSdk = 33
+    targetSdk = 34
     versionCode = 1
     versionName = "1.0"
 
@@ -24,11 +25,11 @@ android {
     }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
   }
   kotlinOptions {
-    jvmTarget = "1.8"
+    jvmTarget = "11"
   }
   buildFeatures {
     viewBinding = true
@@ -45,4 +46,22 @@ dependencies {
   testImplementation("junit:junit:4.13.2")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+  implementation("androidx.databinding:viewbinding:9.2.0")
+
+  // Retrofit + OkHttp : pour les appels réseau
+  implementation("com.squareup.retrofit2:retrofit:2.11.0")
+  implementation("com.squareup.okhttp3:okhttp:4.12.0")
+  implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+  // Moshi : pour lire/écrire le JSON
+  implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+  implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
+
+  // Coroutines : pour l'asynchrone
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+
+  // ViewModel + Lifecycle
+  implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+  implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
 }
