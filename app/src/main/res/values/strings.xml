@@ -12,4 +12,5 @@
   <string name="prompt_recipient">Destinataire</string>
   <string name="prompt_amount">Montant</string>
   <string name="action_transfer">Faire le virement</string>
+  <string name="r_essayer">Réessayer</string>
 </resources>
