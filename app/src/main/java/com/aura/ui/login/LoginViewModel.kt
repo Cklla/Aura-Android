@@ -1,9 +1,10 @@
 package com.aura.ui.login
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.aura.data.api.LoginRequest
 import com.aura.data.api.RetrofitInstance
+import com.aura.data.repository.AuraRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -11,32 +12,27 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-// Sealed class = une liste fermée d'états possibles. Impossible d'en ajouter depuis l'extérieur.
 sealed class LoginUiState {
-    object Idle : LoginUiState()       // état initial, rien ne se passe
-    object Loading : LoginUiState()    // requête en cours
-    object Success : LoginUiState()    // connexion réussie
-    data class Error(val message: String) : LoginUiState() // erreur avec message
+    object Idle : LoginUiState()
+    object Loading : LoginUiState()
+    object Success : LoginUiState()
+    data class Error(val message: String) : LoginUiState()
 }
 
-class LoginViewModel : ViewModel() {
+// Le Repository est injecté en paramètre, le ViewModel ne sait pas que c'est Retrofit derrière
+class LoginViewModel(private val repository: AuraRepository) : ViewModel() {
 
-    // Les deux champs du formulaire, initialement vides
     private val _email = MutableStateFlow("")
     private val _password = MutableStateFlow("")
 
-    // Le bouton est actif seulement si les deux champs sont remplis
-    // combine() fusionne deux Flow : dès que l'un change, il recalcule
     val isLoginButtonEnabled: StateFlow<Boolean> = combine(_email, _password) { email, password ->
         email.isNotBlank() && password.isNotBlank()
     }.stateIn(
-        scope = viewModelScope, // lié au cycle de vie du ViewModel
-        started = SharingStarted.WhileSubscribed(5000), // actif tant qu'il y a un observateur
-        initialValue = false // bouton désactivé au démarrage
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = false
     )
 
-    // L'état de l'UI (Loading, Success, Error...)
-    // private _uiState modifiable seulement ici, uiState en lecture seule depuis l'Activity
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
     val uiState: StateFlow<LoginUiState> = _uiState
 
@@ -44,25 +40,29 @@ class LoginViewModel : ViewModel() {
     fun onPasswordChanged(password: String) { _password.value = password }
 
     fun login(identifier: String, password: String) {
-        // viewModelScope.launch : lance une coroutine liée au ViewModel
-        // Si le ViewModel est détruit, la coroutine s'annule automatiquement
         viewModelScope.launch {
-            _uiState.value = LoginUiState.Loading // on passe en état "chargement"
+            _uiState.value = LoginUiState.Loading
 
             try {
-                // suspend fun : on "attend" ici que la réponse arrive, sans bloquer l'UI
-                val response = RetrofitInstance.api.login(LoginRequest(identifier, password))
+                // On appelle le Repository, pas Retrofit directement
+                val granted = repository.login(identifier, password)
 
-                if (response.granted) {
+                if (granted) {
                     _uiState.value = LoginUiState.Success
                 } else {
-                    // L'API a répondu, mais la connexion est refusée
                     _uiState.value = LoginUiState.Error("Identifiants incorrects")
                 }
             } catch (e: Exception) {
-                // Problème réseau (pas de connexion, serveur hors ligne, etc.)
                 _uiState.value = LoginUiState.Error("Erreur réseau : ${e.message}")
             }
         }
+    }
+}
+
+class LoginViewModelFactory: ViewModelProvider.Factory {
+    override fun <T: ViewModel> create(modelClass: Class<T>): T {
+        // On construit la chaîne complète Factory -> Repository -> API
+        @Suppress("UNCHECKED_CAST")
+        return LoginViewModel(AuraRepository(RetrofitInstance.api)) as T
     }
 }

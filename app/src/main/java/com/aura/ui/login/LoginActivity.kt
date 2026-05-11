@@ -13,11 +13,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.aura.databinding.ActivityLoginBinding
 import com.aura.ui.home.HomeActivity
 import kotlinx.coroutines.launch
+import com.aura.data.api.RetrofitInstance
+import com.aura.data.repository.AuraRepository
 
 class LoginActivity : AppCompatActivity() {
 
   private lateinit var binding: ActivityLoginBinding
-  private val viewModel: LoginViewModel by viewModels()
+  private val viewModel: LoginViewModel by viewModels { LoginViewModelFactory() }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
