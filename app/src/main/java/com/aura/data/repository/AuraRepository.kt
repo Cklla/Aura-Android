@@ -3,6 +3,7 @@ package com.aura.data.repository
 import com.aura.data.api.AuraApiService
 import com.aura.data.api.LoginRequest
 import com.aura.data.api.AccountResponse
+import com.aura.data.api.TransferRequest
 
 class AuraRepository(private val api: AuraApiService) {
 
@@ -18,5 +19,11 @@ class AuraRepository(private val api: AuraApiService) {
         val accounts = api.getAccounts(userId)
         val mainAccount = accounts.first { it.main }
         return mainAccount.balance
+    }
+
+    // Effectue le virement et retourne true si ok
+    suspend fun transfer(sender: String, recipient: String, amount: Double): Boolean {
+        val response = api.transfer(TransferRequest(sender, recipient, amount))
+        return response.result
     }
 }

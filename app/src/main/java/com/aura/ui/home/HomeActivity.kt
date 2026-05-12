@@ -1,5 +1,6 @@
 package com.aura.ui.home
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -27,7 +28,9 @@ class HomeActivity : AppCompatActivity() {
 
   private val startTransferActivityForResult =
     registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-      // TODO étape 13 : recharger la balance après un transfert
+      if (result.resultCode == Activity.RESULT_OK) {
+        viewModel.loadBalance(currentUserId) // on recharge la balance depuis l'API
+      }
     }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +84,9 @@ class HomeActivity : AppCompatActivity() {
 
     binding.transfer.setOnClickListener {
       startTransferActivityForResult.launch(
-        Intent(this@HomeActivity, TransferActivity::class.java)
+        Intent(this@HomeActivity, TransferActivity::class.java).apply {
+          putExtra("USER_ID", currentUserId) // on passe l'ID au suivant
+        }
       )
     }
   }

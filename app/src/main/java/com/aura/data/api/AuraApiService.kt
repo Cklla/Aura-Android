@@ -21,4 +21,17 @@ interface AuraApiService {
     // List<AccountResponse> : l'API retourne une liste de comptes
     @GET("accounts/{id}")
     suspend fun getAccounts(@Path("id") userID: String): List<AccountResponse>
+
+    @POST("transfer")
+    suspend fun transfer(@Body request: TransferRequest): TransferResponse
 }
+
+data class TransferRequest(
+    val sender: String, // l'ID de l'utilisateur connecté
+    val recipient: String, // l'ID du bénéficiaire
+    val amount: Double
+)
+
+data class TransferResponse(
+    val result: Boolean // true = transfert réussi, false = transfert refusé
+)
