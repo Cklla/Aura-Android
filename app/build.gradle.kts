@@ -11,8 +11,8 @@ android {
     applicationId = "com.aura"
     minSdk = 24
     targetSdk = 34
-    versionCode = 1
-    versionName = "1.2"
+    versionCode = 2
+    versionName = "2.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -44,6 +44,13 @@ dependencies {
   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
   implementation("androidx.activity:activity-ktx:1.9.0")
   testImplementation("junit:junit:4.13.2")
+
+  // MockK : pour créer de faux Repository dans les tests
+  testImplementation("io.mockk:mockk:1.13.10")
+
+  // Coroutines Test : pour remplacer Dispatchers.Main dans les tests
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
   implementation("androidx.databinding:viewbinding:9.2.0")
