@@ -7,6 +7,7 @@ import com.aura.data.api.RetrofitInstance
 import com.aura.data.repository.AuraRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 // Les quatre états possibles de l'écran principal
@@ -22,7 +23,7 @@ class HomeViewModel(private val repository: AuraRepository) : ViewModel() {
 
     // L'état de l'UI, commence à idle (rien n'est chargé)
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Idle)
-    val uiState : StateFlow<HomeUiState> = _uiState
+    val uiState : StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     // Appelé depuis HomeActivity quand on a le userId
     fun loadBalance(userId: String) {

@@ -14,10 +14,10 @@ class AuraRepository(private val api: AuraApiService) {
     }
 
     // Récupère la liste des comptes puis filtre pour ne garder que le compte principal
-    // first() plante si aucun compte n'est "main = true"
     suspend fun getAccounts(userId: String): Double {
         val accounts = api.getAccounts(userId)
-        val mainAccount = accounts.first { it.main }
+        val mainAccount = accounts.firstOrNull { it.main }
+            ?: throw Exception("Aucun compte principal trouvé")
         return mainAccount.balance
     }
 

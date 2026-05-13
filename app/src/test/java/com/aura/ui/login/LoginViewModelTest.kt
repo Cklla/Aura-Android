@@ -83,9 +83,8 @@ class LoginViewModelTest {
 
         viewModel.login("user@test.com", "password")
 
-        // Grâce à UnconfinedTestDispatcher, la coroutine s'est terminée
-        // immédiatement, on peut vérifier l'état final
-        assertEquals(LoginUiState.Success, viewModel.uiState.value)
+        // Grâce à UnconfinedTestDispatcher, la coroutine s'est terminée immédiatement, on peut vérifier l'état final
+        assertEquals(LoginUiState.Success("user@test.com"), viewModel.uiState.value)
     }
 
     @Test

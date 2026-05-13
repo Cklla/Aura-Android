@@ -8,6 +8,7 @@ import com.aura.data.repository.AuraRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 sealed class LoginUiState {
     object Idle : LoginUiState()
     object Loading : LoginUiState()
-    object Success : LoginUiState()
+    data class Success(val userId: String) : LoginUiState()
     data class Error(val message: String) : LoginUiState()
 }
 
@@ -34,7 +35,7 @@ class LoginViewModel(private val repository: AuraRepository) : ViewModel() {
     )
 
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
-    val uiState: StateFlow<LoginUiState> = _uiState
+    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun onEmailChanged(email: String) { _email.value = email }
     fun onPasswordChanged(password: String) { _password.value = password }
@@ -48,7 +49,7 @@ class LoginViewModel(private val repository: AuraRepository) : ViewModel() {
                 val granted = repository.login(identifier, password)
 
                 if (granted) {
-                    _uiState.value = LoginUiState.Success
+                    _uiState.value = LoginUiState.Success(identifier)
                 } else {
                     _uiState.value = LoginUiState.Error("Identifiants incorrects")
                 }

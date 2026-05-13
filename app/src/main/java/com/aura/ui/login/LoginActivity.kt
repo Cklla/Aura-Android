@@ -61,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
               binding.loading.visibility = View.GONE
               // finish() empêche de revenir au login avec le bouton "retour"
               val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-              intent.putExtra("USER_ID", binding.identifier.text.toString())
+              intent.putExtra("USER_ID", state.userId)
               startActivity(intent)
               finish()
             }
