@@ -26,7 +26,7 @@ L'objectif de la mission est d'**intégrer des données provenant d'une API REST
 ## Captures d'écran
 
 <div align="center">
-  <img src="screenshot.png" alt="Aperçu de l'application" width="700">
+  <img src="screenshot.png" alt="Aperçu de l'application" width="350">
 </div>
 
 ---
